@@ -2,15 +2,15 @@ package com.bnguyen.fallingsand.materials;
 
 import java.awt.*;
 
+import static com.bnguyen.fallingsand.materials.util.Constants.*;
+
 /**
  * Base class for all materials.
  *
  * @author Brandon Nguyen
  */
 public abstract class Material {
-    public static final int EMPTY = 0, METAL = 1, SAND = 2, WATER = 3;
-    protected static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3;
-    protected int direction = DOWN;
+    public static int direction = DOWN; // set default down as most particles are affected by gravity
     private Color materialColor;
     private String name;
 
@@ -21,8 +21,8 @@ public abstract class Material {
      * @return A specific Material object defined by the given particle type.
      * @throws IllegalArgumentException if the given particle type is unable to be matched.
      */
-    public static Material match(int particleType) throws IllegalArgumentException {
-        switch (particleType) {
+    public static Material match( int particleType ) throws IllegalArgumentException {
+        switch ( particleType ) {
             case EMPTY:
                 return new Empty();
             case METAL:
@@ -31,8 +31,14 @@ public abstract class Material {
                 return new Sand();
             case WATER:
                 return new Water();
+            case ICE:
+                return new Ice();
+            case GAS:
+                return new Gas();
+            case CLOUD:
+                return new Cloud();
             default:
-                throw new IllegalArgumentException(particleType + " is not a valid particle type.");
+                throw new IllegalArgumentException( particleType + " is not a valid particle type." );
         }
     }
 
@@ -43,8 +49,8 @@ public abstract class Material {
      * @return An int defined by the given particle.
      * @throws IllegalArgumentException if the given Material is unable to be matched.
      */
-    public static int match(Material particle) throws IllegalArgumentException {
-        switch (particle.getName()) {
+    public static int match( Material particle ) throws IllegalArgumentException {
+        switch ( particle.getName() ) {
             case "Empty":
                 return EMPTY;
             case "Metal":
@@ -53,8 +59,14 @@ public abstract class Material {
                 return SAND;
             case "Water":
                 return WATER;
+            case "Ice":
+                return ICE;
+            case "Gas":
+                return GAS;
+            case "Cloud":
+                return CLOUD;
             default:
-                throw new IllegalArgumentException(particle.getName() + " is not a valid Material.");
+                throw new IllegalArgumentException( particle.getName() + " is not a valid Material." );
         }
     }
 
@@ -62,7 +74,7 @@ public abstract class Material {
         return materialColor;
     }
 
-    protected void setMaterialColor(Color materialColor) {
+    protected void setMaterialColor( Color materialColor ) {
         this.materialColor = materialColor;
     }
 
@@ -70,9 +82,9 @@ public abstract class Material {
         return name;
     }
 
-    protected void setName(String name) {
+    protected void setName( String name ) {
         this.name = name;
     }
 
-    public abstract boolean equals(Object obj);
+    public abstract boolean equals( Object obj ); // in case custom behavior needs to be checked
 }
