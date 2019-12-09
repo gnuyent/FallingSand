@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.Hashtable;
+import java.util.List;
 
 public class SandDisplay extends JComponent implements MouseListener,
         MouseMotionListener, ActionListener, ChangeListener {
@@ -23,7 +24,7 @@ public class SandDisplay extends JComponent implements MouseListener,
     private JSlider slider;
     private int speed;
 
-    public SandDisplay(String title, int numRows, int numCols, String[] buttonNames) {
+    public SandDisplay(String title, int numRows, int numCols, List<String> buttonNames) {
         this.numRows = numRows;
         this.numCols = numCols;
         tool = Material.match(1);
@@ -51,13 +52,16 @@ public class SandDisplay extends JComponent implements MouseListener,
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
         topPanel.add(buttonPanel);
 
-        buttons = new JButton[buttonNames.length];
+        // Refactor button names to include reset.
+        buttonNames.add(0, "Reset");
 
-        for (int i = 0; i < buttons.length; i++) {
-            buttons[i] = new JButton(buttonNames[i]);
-            buttons[i].setActionCommand("" + i);
-            buttons[i].addActionListener(this);
-            buttonPanel.add(buttons[i]);
+        buttons = new JButton[buttonNames.size()];
+
+        for (int buttonCount = 0; buttonCount < buttons.length; buttonCount++) {
+            buttons[buttonCount] = new JButton(buttonNames.get(buttonCount));
+            buttons[buttonCount].setActionCommand("" + buttonCount);
+            buttons[buttonCount].addActionListener(this);
+            buttonPanel.add(buttons[buttonCount]);
         }
 
         buttons[Material.match(tool)].setSelected(true);
@@ -140,11 +144,17 @@ public class SandDisplay extends JComponent implements MouseListener,
     }
 
     public void actionPerformed(ActionEvent e) {
-        // Map integer menu selection to material
-        tool = Material.match(Integer.parseInt(e.getActionCommand()));
-        for (JButton button : buttons)
-            button.setSelected(false);
-        ((JButton) e.getSource()).setSelected(true);
+        int toolSelection = Integer.parseInt(e.getActionCommand());
+        // Implement reset
+        if (toolSelection == 0) {
+            SandLab.reset = true;
+        } else {
+            // Map integer menu selection to correct material
+            tool = Material.match(toolSelection - 1);
+            for (JButton button : buttons)
+                button.setSelected(false);
+            ((JButton) e.getSource()).setSelected(true);
+        }
     }
 
     public void stateChanged(ChangeEvent e) {

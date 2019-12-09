@@ -22,16 +22,18 @@ public abstract class Material {
      * @throws IllegalArgumentException if the given particle type is unable to be matched.
      */
     public static Material match(int particleType) throws IllegalArgumentException {
-        if (particleType == EMPTY)
-            return new Empty();
-        else if (particleType == METAL)
-            return new Metal();
-        else if (particleType == SAND)
-            return new Sand();
-        else if (particleType == WATER)
-            return new Water();
-        else
-            throw new IllegalArgumentException(particleType + " is not a valid particle type.");
+        switch (particleType) {
+            case EMPTY:
+                return new Empty();
+            case METAL:
+                return new Metal();
+            case SAND:
+                return new Sand();
+            case WATER:
+                return new Water();
+            default:
+                throw new IllegalArgumentException(particleType + " is not a valid particle type.");
+        }
     }
 
     /**
@@ -44,13 +46,13 @@ public abstract class Material {
     public static int match(Material particle) throws IllegalArgumentException {
         switch (particle.getName()) {
             case "Empty":
-                return 0;
+                return EMPTY;
             case "Metal":
-                return 1;
+                return METAL;
             case "Sand":
-                return 2;
+                return SAND;
             case "Water":
-                return 3;
+                return WATER;
             default:
                 throw new IllegalArgumentException(particle.getName() + " is not a valid Material.");
         }

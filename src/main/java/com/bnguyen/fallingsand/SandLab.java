@@ -1,38 +1,30 @@
 package com.bnguyen.fallingsand;
 
-import com.bnguyen.fallingsand.materials.*;
+import com.bnguyen.fallingsand.materials.Empty;
+import com.bnguyen.fallingsand.materials.Material;
 import com.bnguyen.fallingsand.materials.util.Movable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SandLab {
-    public static void main(String[] args) {
-        // add newly added materials to this array
-        Material[] materials = new Material[]{new Empty(), new Metal(), new Sand(), new Water()};
-        SandLab lab = new SandLab(120, 80, materials);
-        lab.run();
-    }
-
     // refactor grid array to use abstract Material data type
     private Material[][] grid;
     private SandDisplay display;
     // added Material array field for easy traversal of all materials
     private Material[] materials;
+    // hooks into SandDisplay
+    public static boolean reset = true;
 
     public SandLab(int numRows, int numCols, Material[] materials) {
         // Initialize display grid
         grid = new Material[numRows][numCols];
-        // Fill grid with Empty objects
-        for (Material[] row : grid)
-            Arrays.fill(row, materials[Material.EMPTY]);
-
+        List<String> names = new ArrayList<>();
+        reset();
         this.materials = materials;
-        String[] names;
-        names = new String[materials.length];
-
-        for (int particleType = 0; particleType < names.length; particleType++)
-            names[particleType] = materials[particleType].getName();
-
+        for (Material m : materials)
+            names.add(m.getName());
         display = new SandDisplay("Falling Sand", numRows, numCols, names);
     }
 
@@ -44,11 +36,22 @@ public class SandLab {
 
     //copies each element of grid into the display
     public void updateDisplay() {
-        for (int row = 0; row < grid.length; row++) {
-            for (int col = 0; col < grid[row].length; col++) {
-                display.setColor(row, col, grid[row][col].getMaterialColor());
+        if (reset)
+            reset();
+        else {
+            for (int row = 0; row < grid.length; row++) {
+                for (int col = 0; col < grid[row].length; col++) {
+                    display.setColor(row, col, grid[row][col].getMaterialColor());
+                }
             }
         }
+    }
+
+    public void reset() {
+        reset = false;
+        Empty e = new Empty();
+        for (Material[] row : this.grid)
+            Arrays.fill(row, e);
     }
 
     //do not modify
